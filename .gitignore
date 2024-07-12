@@ -1,0 +1,4 @@
+foo/
+venv/
+.env
+.idea/
