@@ -54,22 +54,19 @@ def readTXT():
 def linkJSONLabel():
     input = readJSONFiles()
     trainLabel = readTXT()
-    linkedFile = pd.DataFrame
+    data = []
+    labels = []
 
     for index, fila in trainLabel.iterrows():
-       # print(subject)
-        #print(index)
-        #print(fila)
-        specdata = input[input['name_file'] == f'{fila['Subject']}.json']
+        # Obtener la data de input para cada subject en fila
+        tempData = input[input['name_file'] == f'{fila['Subject']}.json']
+        data.append(tempData)
+        labels.append(fila['label'])
 
-        #print(specdata)
-        label = trainLabel.loc[trainLabel['Subject'] != 'Subject', 'label']
-        linkedFile = pd.concat([specdata,label], ignore_index=True)
+    # Unir los datos con la etiqueta correspondiente
+    linkedFile = pd.DataFrame({'data': data, 'label':labels})
+    #print(linkedFile.iloc[0])
 
-
-    print(linkedFile)
-
-    # premensaje = input[input['name_file'] == 'subject334.json']
-    #TODO porque no imprimie todos los subject
-    #TODO crear un archivo para ver cómo está generando los datos
+    return linkedFile
+    
 linkJSONLabel()
