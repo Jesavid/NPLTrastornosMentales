@@ -2,7 +2,6 @@ import os
 import numpy as np
 from dotenv import load_dotenv
 import pandas as pd
-import numpy
 import string
 import nltk
 from nltk.tokenize import word_tokenize
@@ -30,7 +29,8 @@ dataArray = {
     'id_message': [],
     'message': [],
     'preproccedMessage': [],
-    'date': []
+    'date': [],
+    'label': []
 }
 
 # Función para leer los archivos JSON y crear un DataFrame con el nombre del archivo y
@@ -88,6 +88,7 @@ def linkJSONLabel():
 
 #Preprocesar texto
 def preprocesstext(file, name_file):
+    trainLabel = readTXT()
     i = 0
     #print(f"Preprocessado del {name_file}")
 
@@ -95,6 +96,11 @@ def preprocesstext(file, name_file):
     file.insert(0, 'Subject', name_file)
     # Agregar la columna para el texto preprocesado
     file.insert(3, 'preproccedMessage', " ")
+
+    # Obtener el label para un subject especifico
+    specLabel = trainLabel[trainLabel['Subject'] == name_file.replace('.json','')]
+    # Agregar la columna label e insertar el valor correspondiente
+    file.insert(5, 'label', specLabel['label'].values[0])
 
     for content in file['message']:
         # Tokenizar y convertir a minuscula
@@ -105,8 +111,11 @@ def preprocesstext(file, name_file):
         tempMessage = [tempMessage for tempMessage in tempMessage if tempMessage not in string.punctuation]
         # Regresar tempMessage a una oracion
         tempMessage = ' '.join(tempMessage)
+        # tempTXT = trainLabel[trainLabel['label'] == name_file.replace('.json', '')]
+        # print(tempTXT.values)
         # Agregar en la columna preproccedMessage el texto preprocesado
         file.loc[i, 'preproccedMessage'] = tempMessage
+        # file.loc[i, 'label'] = trainLabel[trainLabel['label'] == name_file.replace('.json','')]
         i = i + 1
 
     # Agregar al dict dataArray los subjects
@@ -114,13 +123,14 @@ def preprocesstext(file, name_file):
     dataArray['id_message'].append(file['id_message'])
     dataArray['message'].append(file['message'])
     dataArray['preproccedMessage'].append(file['preproccedMessage'])
-    dataArray['date'] = file['date']
+    dataArray['date'].append(file['date'])
+    dataArray['label'].append(file['label'])
 
         # TODO agregar signos que no están es string.punctuation
         # TODO unir mensaje limpio con name_file
         # TODO escribir en archivo, registrar
 
 readJSONFiles()
-print(dataArray['preproccedMessage'])
+print(dataArray['label'])
 finalFile = pd.DataFrame(dataArray.items())
-finalFile.to_json(f'{PATH_CSVLINKEDFILES}final.json')
+finalFile.to_json(f'{PATH_CSVLINKEDFILES}ab.json')
