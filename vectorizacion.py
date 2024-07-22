@@ -3,9 +3,14 @@ import pandas as pd
 import os
 from dotenv import load_dotenv
 
+# Ajustar las opciones de visualización en terminal
+pd.set_option('display.max_rows', None)  # Muestra todas las filas
+pd.set_option('display.max_columns', None)  # Muestra todas las columnas
+pd.set_option('display.width', None)  # Ajusta el ancho de la visualización
+pd.set_option('display.max_colwidth', None)  # Muestra el contenido completo de las columnas
+
 # Cargar variables de entorno
 load_dotenv()
-
 PATH_FINALFILE = os.getenv('PATH_FINALFILE')
 
 corpus = []
@@ -14,12 +19,22 @@ def bagOfWords():
     vectorizer = CountVectorizer()
     # Leer JSON del corpus subject, message, label
     partialCorpus = pd.read_json(f'{PATH_FINALFILE}traincorpus.json', dtype=object)
-    # print(partialCorpus.index)
-    for index in partialCorpus.index:
-        vector = vectorizer.fit_transform(partialCorpus.loc[index,["message"]])
-        print(vectorizer.get_feature_names_out())
-        print(vector.toarray())
-        break
-        # print(index)
+
+    # Vectoriacion global
+    vectorizer.fit_transform(partialCorpus['message'])
+    # print(vectorizer.get_feature_names_out())
+
+    for i in partialCorpus.index:
+        corpus = vectorizer.transform(partialCorpus.loc[i,['message']])
+        print(corpus)
+        b
+
+
+
+    # df = pd.DataFrame(vector.toarray(), columns=vectorizer.get_feature_names_out())
+    # df.to_csv(f'{PATH_FINALFILE}vector.csv')
+    # print(df)
+
+
 
 bagOfWords()
