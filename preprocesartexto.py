@@ -388,9 +388,8 @@ for index in range(len(next(iter(paths.values())))):
     # Mostrar tabla
     #wordCountTab.show()
 
-    df = pd.DataFrame(corpus.items())
+    df = pd.DataFrame(corpus)
     df.to_json(f'{PATH_FINALFILE}{paths['type'][index]}corpus.json')
-    df.to_csv(f'{PATH_FINALFILE}{paths['type'][index]}corpus.csv')
 
 
     # Vaciar diccionario
