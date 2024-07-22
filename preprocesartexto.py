@@ -1,7 +1,5 @@
 import os
 import string
-# import fontstyle
-# import tkinter
 import unicodedata
 import nltk
 from nltk.tokenize import word_tokenize
@@ -23,11 +21,22 @@ pd.set_option('display.max_colwidth', None)  # Muestra el contenido completo de 
 
 # Cargar variables de entorno
 load_dotenv()
+
 PATH_SUBJECTSTRAIN = os.getenv('PATH_SUBJECTSTRAIN')
 PATH_TRAIN = os.getenv('PATH_TRAIN')
-PATH_CSVLINKEDFILES = os.getenv('PATH_CSVLINKEDFILES')
 
-# Declarar de dict para guardar los subjects preprocesados
+PATH_SUBJECTSTRAIL = os.getenv('PATH_SUBJECTSTRAIL')
+PATH_TRAIL = os.getenv('PATH_TRAIL')
+
+paths = {
+    "type": ['train', 'trail'],
+    "subjects": [PATH_SUBJECTSTRAIN, PATH_SUBJECTSTRAIL],
+    "label": [PATH_TRAIN, PATH_TRAIL]
+}
+
+PATH_FINALFILE = os.getenv('PATH_FINALFILE')
+
+# Declarar dict para guardar los subjects preprocesados
 dataArray = {
     'Subject': [],
     'id_message': [],
@@ -37,10 +46,17 @@ dataArray = {
     'label': []
 }
 
-# Declarar array para contar las palabras
+# Declarar dict para guardar subject, message, label
+corpus = {
+    'subject': [],
+    'message': [],
+    'label': []
+}
+
+# Declarar dict para contar las palabras
 wordCount = {}
 
-# Declarar array para ver las palabras y su subject asociado
+# Declarar dict para ver las palabras y su subject asociado
 wordStrange = {}
 
 # Declarar array de stop words no contenidas en nltk
@@ -265,26 +281,26 @@ fontsWords = {
     "": 'z',
 }
 
-def readJSONFiles():
-    # Obtener el nombre del archivo para cada archivo en la ruta TRAIN
-    for name_file in os.listdir(PATH_SUBJECTSTRAIN):
+
+def readJSONFiles(index):
+    # Obtener el nombre del archivo para cada archivo en la ruta
+    for name_file in os.listdir(paths['subjects'][index]):
         # leer JSON
-        file = pd.read_json(f"{PATH_SUBJECTSTRAIN}/{name_file}")
+        file = pd.read_json(f"{paths['subjects'][index]}/{name_file}")
         preprocesstext(file, name_file)
 
 
-# Función para leer los archivos JSON y crear un DataFrame con el nombre del archivo y
-# los datos asociados
-
 # Función para leer las etiquetas
-def readTXT():
-    trainLabel = pd.read_csv(PATH_TRAIN)
+def readTXT(index):
+    trainLabel = pd.read_csv(paths['label'][index])
     return trainLabel
+
 
 # Preprocesar texto
 def preprocesstext(file, name_file):
-    trainLabel = readTXT()
+    trainLabel = readTXT(index)
     i = 0
+    concatMessage = ""
 
     # Agregar la columna subject
     file.insert(0, 'Subject', name_file)
@@ -296,6 +312,7 @@ def preprocesstext(file, name_file):
     # Agregar la columna label e insertar el valor correspondiente
     file.insert(5, 'label', specLabel['label'].values[0])
 
+    # Leer cada mensaje de cada subject y preprocesar el texto
     for content in file['message']:
         # Convertir las palabras en la fuente general
         tempMessage = ''.join(fontsWords[caracter] if caracter in fontsWords else caracter for caracter in content)
@@ -317,16 +334,18 @@ def preprocesstext(file, name_file):
         tempMessage = [tempMessage for tempMessage in tempMessage if tempMessage not in string.punctuation]
         tempMessage = [tempMessage for tempMessage in tempMessage if tempMessage not in puntuacion]
 
-        for word in tempMessage:
-            if word in wordCount:
-                wordCount[word] = wordCount[word] + 1
-                wordStrange[word] = name_file
-            else:
-                wordCount[word] = 1
-                wordStrange[word] = name_file
+        # Contar el total de las palabras de todos los subjects
+        # for word in tempMessage:
+        #     if word in wordCount:
+        #         wordCount[word] = wordCount[word] + 1
+        #         wordStrange[word] = name_file
+        #     else:
+        #         wordCount[word] = 1
+        #         wordStrange[word] = name_file
 
         # Regresar tempMessage a una oracion
         tempMessage = ' '.join(tempMessage)
+        concatMessage += tempMessage + " "
         # Agregar en la columna preproccedMessage el texto preprocesado
         file.loc[i, 'preproccedMessage'] = tempMessage
         i = i + 1
@@ -339,27 +358,44 @@ def preprocesstext(file, name_file):
     dataArray['date'].append(file['date'])
     dataArray['label'].append(file['label'])
 
-    # TODO agregar signos que no están es string.punctuation
+    # Agregar datos al corpus
+    corpus['subject'].append(name_file.replace('.json', ''))
+    corpus['message'].append(concatMessage)
+    corpus['label'].append(file['label'][0])
 
 
-readJSONFiles()
 
-# Convertir a Data Frame y guardar como JSON
-finalFile = pd.DataFrame(dataArray.items())
-finalFile.to_json(f'{PATH_CSVLINKEDFILES}ab.json')
+for index in range(len(next(iter(paths.values())))):
+    readJSONFiles(index)
 
-# Ordenar de mayor a menor las palabras
-wordCount = dict(sorted(wordCount.items(), key=lambda item: item[1], reverse=True))
-word = list(wordCount.keys())
-count = list(wordCount.values())
+    # Convertir a Data Frame y guardar como JSON
+    finalFile = pd.DataFrame(dataArray.items())
+    finalFile.to_json(f'{PATH_FINALFILE}{paths['type'][index]}.json')
 
-# Crear una tabla de las palabras tokenizadas y su cantidad
-wordCountTab = go.Figure(data=[go.Table(header=dict(values=['Word', 'Count']),
-                                        cells=dict(values=[word, count])
-                                        )])
-# Mostrar tabla
-wordCountTab.show()
+    # Crear Data Frame y guardar CSV de las palabras y su cantidad
+    df = pd.DataFrame(wordCount.items(), columns=['Palabra', 'Cantidad'])
+    df.to_csv(f'{PATH_FINALFILE}{paths['type'][index]}.csv')
 
-# Crear Data Frame y guardar CSV de las palabras y su cantidad
-df = pd.DataFrame(wordCount.items(), columns=['Palabra', 'Cantidad'])
-df.to_csv(f'{PATH_CSVLINKEDFILES}new.csv')
+    # Ordenar de mayor a menor las palabras
+    wordCount = dict(sorted(wordCount.items(), key=lambda item: item[1], reverse=True))
+    word = list(wordCount.keys())
+    count = list(wordCount.values())
+
+    # Crear una tabla de las palabras tokenizadas y su cantidad
+    wordCountTab = go.Figure(data=[go.Table(header=dict(values=['Word', 'Count']),
+                                            cells=dict(values=[word, count])
+                                            )])
+    # Mostrar tabla
+    #wordCountTab.show()
+
+    df = pd.DataFrame(corpus.items())
+    df.to_json(f'{PATH_FINALFILE}{paths['type'][index]}corpus.json')
+    df.to_csv(f'{PATH_FINALFILE}{paths['type'][index]}corpus.csv')
+
+
+    # Vaciar diccionario
+    for key in dataArray:
+        dataArray[key].clear()
+    wordCount.clear()
+    for key in corpus:
+        corpus[key].clear()
