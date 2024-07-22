@@ -13,7 +13,6 @@ pd.set_option('display.max_colwidth', None)  # Muestra el contenido completo de 
 load_dotenv()
 PATH_FINALFILE = os.getenv('PATH_FINALFILE')
 
-corpus = []
 # Funcion bolsa de palabras
 def bagOfWords():
     vectorizer = CountVectorizer()
@@ -21,20 +20,11 @@ def bagOfWords():
     partialCorpus = pd.read_json(f'{PATH_FINALFILE}traincorpus.json', dtype=object)
 
     # Vectoriacion global
-    vectorizer.fit_transform(partialCorpus['message'])
-    # print(vectorizer.get_feature_names_out())
+    vector = vectorizer.fit_transform(partialCorpus['message'])
 
-    for i in partialCorpus.index:
-        corpus = vectorizer.transform(partialCorpus.loc[i,['message']])
-        print(corpus)
-        b
-
-
-
-    # df = pd.DataFrame(vector.toarray(), columns=vectorizer.get_feature_names_out())
-    # df.to_csv(f'{PATH_FINALFILE}vector.csv')
-    # print(df)
-
+    # Convertir en dataframe y guardar CSV de la vectorizacion
+    df = pd.DataFrame(vector.toarray(), columns=vectorizer.get_feature_names_out())
+    df.to_csv(f'{PATH_FINALFILE}vector.csv')
 
 
 bagOfWords()
