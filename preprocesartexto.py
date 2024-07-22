@@ -40,35 +40,70 @@ dataArray = {
 # Declarar array para contar las palabras
 wordCount = {}
 
+# Declarar array para ver las palabras y su subject asociado
+wordStrange = {}
+
 # Declarar array de stop words no contenidas en nltk
 stop_words = stopWords.union(
-    ["a", "acá", "ahí", "ajena", "ajeno", "ajenos", "ajenas", "al", "algo", "algún", "alguna", "alguns", "algunos",
-     "allá", "allí", "ambos", "ante", "antes", "aquel", "aquella", "aquello", "aquí", "arriba", "así", "atrás", "aun",
-     "aunque", "bajo", "bastante", "bien", "cabe", "cada", "casi", "cierto", "cierta", "ciertos", "ciertas",
-     "como", "con", "conmigo", "conseguimos", "conseguir", "consigo", "consigue", "consiguen", "consigues",
-     "contigo", "contra", "cual", "cuales", "cualquier", "cualquiera", "cualquieras", "cuan", "cuando",
-     "cuanto", "cuanta", "cuantos", "cuantas", "de", "dejar", "del", "demás", "demasiado", "demasiada", "demasiados",
-     "demasiadas", "dentro", "desde", "donde", "dos", "el", "él", "ella", "ellas", "ellos", "empleáis", "emplean",
-     "emplear", "empleas", "empleo", "en", "encima", "entonces", "entre", "era", "eras", "eramos", "eran", "eres",
-     "es", "esa", "ese", "eso", "esas", "esos", "esta", "estas", "estaba", "estado", "estáis", "estamos", "están",
-     "estar", "este", "esto", "estoy", "etc", "fin", "fue", "fueron", "fui", "fuimos", "gueno", "ha", "hace", "haces",
-     "hacéis", "hacemos", "hacen", "hacer", "hacia", "hago", "hasta", "incluso", "intenta", "intentas", "intentáis",
-     "intentamos", "intentan", "intentar", "intento", "ir", "jamás", "junto", "juntos", "la", "las", "lo", "los",
-     "largo", "más", "me", "menos", "mi", "mía", "mías", "mío", "míos", "mis", "misma", "mismo", "mismas", "modos",
-     "mucha", "muchas", "muchísimo", "muchísima", "muchísimos", "muchísimas", "mucho", "muchos", "muy", "nada", "ni",
-     "ningún", "ninguna", "ninguno", "ningunas", "no", "nos", "nosotras", "nosotros", "nuestra", "nuestro", "nuestras",
-     "nuestros", "nunca", "os", "otra", "otro", "otras", "otros", "para", "parecer", "pero", "poca", "poco", "pocas",
-     "podéis", "podemos", "poder", "podría", "podrías", "podríais", "podríamos", "podrían", "por", "por qué", "porque",
-     "primero", "puede", "pueden", "puedo", "pues", "que", "qué", "querer", "quién", "quiénes", "quienesquiera",
-     "quienquiera", "quizá", "quizás", "sabe", "sabes", "saben", "sabéis", "sabemos", "saber", "se", "según", "ser",
-     "si", "sí", "siempre", "siendo", "sin", "sino", "so", "sobre", "sois", "solamente", "solo", "sólo", "somos",
-     "soy", "sr", "sra", "sres", "sta", "su", "suya", "suyo", "suyas", "suyos", "tal", "tales", "también", "tampoco",
-     "tan", "tanta", "tantas", "tanto", "tantos", "te", "tenéis", "tenemos", "tener", "tengo", "ti", "tiempo",
-     "tiene", "tienen", "toda", "todo", "todas", "todos", "tomar", "trabaja", "trabajo", "trabajáis", "trabajamos",
-     "trabajan", "trabajar", "trabajas", "tras", "tú", "tu", "tus", "tuya", "tuyo", "tuyas", "tuyos", "último",
-     "ultimo", "un", "una", "uno", "unas", "unos", "usa", "usas", "usáis", "usamos", "usan", "usar", "uso", "usted",
-     "ustedes", "va", "van", "vais", "valor", "vamos", "varias", "varios", "vaya", "verdadera", "vosotras", "vosotros",
-     "voy", "vuestra", "vuestro", "vuestras", "vuestros", "y", "ya", "yo"])
+    [
+        "a", "al", "algo", "algunas", "algunos", "ante", "antes", "como", "con", "contra", "cual", "cuando", "de",
+        "del", "desde",
+        "donde", "durante", "e", "el", "ella", "ellas", "ellos", "en", "entre", "era", "erais", "éramos", "eran",
+        "eras", "eres",
+        "es", "esa", "esas", "ese", "esos", "esta", "estaba", "estabais", "estábamos", "estaban", "estabas", "estad",
+        "estada",
+        "estadas", "estado", "estados", "estamos", "estando", "estar", "estaremos", "estará", "estarán", "estarás",
+        "estaré",
+        "estaréis", "estaría", "estaríais", "estaríamos", "estarían", "estarías", "estas", "este", "estemos", "esto",
+        "estos",
+        "estoy", "estuve", "estuviera", "estuvierais", "estuviéramos", "estuvieran", "estuvieras", "estuvieron",
+        "estuviese",
+        "estuvieseis", "estuviésemos", "estuviesen", "estuvieses", "estuvimos", "estuviste", "estuvisteis",
+        "estuviéramos",
+        "estuviésemos", "estuvo", "ex", "excepto", "fue", "fuera", "fuerais", "fuéramos", "fueran", "fueras", "fueron",
+        "fuese",
+        "fueseis", "fuésemos", "fuesen", "fueses", "fui", "fuimos", "fuiste", "fuisteis", "ha", "había", "habíais",
+        "habíamos",
+        "habían", "habías", "habéis", "habida", "habidas", "habido", "habidos", "habiendo", "habrá", "habrán", "habrás",
+        "habré",
+        "habréis", "habremos", "habría", "habríais", "habríamos", "habrían", "habrías", "habéis", "había", "habíais",
+        "habíamos",
+        "habían", "habías", "hace", "haceis", "hacemos", "hacen", "hacer", "hacerlo", "haces", "hacia", "haciendo",
+        "hago",
+        "han", "has", "hasta", "hay", "haya", "hayamos", "hayan", "hayas", "he", "hecho", "hemos", "hube", "hubiera",
+        "hubierais",
+        "hubiéramos", "hubieran", "hubieras", "hubieron", "hubiese", "hubieseis", "hubiésemos", "hubiesen", "hubieses",
+        "hubimos",
+        "hubiste", "hubisteis", "hubiéramos", "hubiésemos", "hubo", "la", "las", "le", "les", "lo", "los", "me", "mi",
+        "mis",
+        "mucho", "muchos", "muy", "más", "mí", "mía", "mías", "mío", "míos", "nada", "ni", "ningún", "ninguna",
+        "ningunas",
+        "ninguno", "ningunos", "no", "nos", "nosotras", "nosotros", "nuestra", "nuestras", "nuestro", "nuestros",
+        "nunca",
+        "os", "otra", "otras", "otro", "otros", "para", "parecer", "pero", "poca", "pocas", "poco", "pocos", "podéis",
+        "podemos",
+        "poder", "podría", "podríamos", "podrían", "podrías", "poner", "por", "porque", "primero", "puede", "pueden",
+        "puedo",
+        "pues", "que", "qué", "querer", "quién", "quienes", "quiere", "quiénes", "quiso", "saber", "se", "sé", "ser",
+        "si",
+        "sí", "siendo", "sin", "sino", "so", "sobre", "sois", "solamente", "solo", "sólo", "somos", "son", "soy", "su",
+        "sus", "suya", "suyas", "suyo", "suyos", "sí", "también", "tanto", "te", "tendré", "tendréis", "tendremos",
+        "tendría",
+        "tendríais", "tendríamos", "tendrían", "tendrías", "tened", "tenemos", "tener", "tenga", "tengamos", "tengan",
+        "tengas", "tengo", "tenía", "teníais", "teníamos", "tenían", "tenías", "ti", "tiene", "tienen", "tienes",
+        "todo",
+        "todos", "tu", "tus", "tuve", "tuviera", "tuvierais", "tuviéramos", "tuvieran", "tuvieras", "tuvieron",
+        "tuviese",
+        "tuvieseis", "tuviésemos", "tuviesen", "tuvieses", "tuvimos", "tuviste", "tuvisteis", "tuviéramos",
+        "tuviésemos",
+        "tuvo", "tuya", "tuyas", "tuyo", "tuyos", "un", "una", "uno", "unos", "usa", "usamos", "usan", "usar", "usas",
+        "uso", "usted", "ustedes", "va", "vais", "valor", "vamos", "van", "varias", "varios", "vaya", "veces", "ver",
+        "verdad", "verdadera", "verdadero", "vosotras", "vosotros", "voy", "vuestra", "vuestras", "vuestro", "vuestros",
+        "y", "ya", "yo", "él", "éramos", "ésa", "ésas", "ése", "ésos", "ésta", "éstas", "éste", "éstos", "última",
+        "últimas",
+        "último", "últimos"
+    ]
+)
 
 # Declarar array de signos de puntuacion
 puntuacion = ['___', '✦', '...', '“', '«', '✗', '¿', '»', '⁣', '``', '°', '━']
@@ -102,12 +137,8 @@ emojis = {
 }
 
 # Declarar diccionario para corregir las palabras con una fuente diferente
-
 fontsWords = {
-# Acentos
-
-
-# Primer set
+    # Primer set
     "ᴀ": 'A',
     "ᴅ": 'D',
     "ᴇ": 'E',
@@ -121,7 +152,7 @@ fontsWords = {
     "ᴛ": 'T',
     "ᴠ": 'V',
     "ʏ": 'Y',
-# Segundo set
+    # Segundo set
     "𝐴": 'A',
     "𝑎": 'a',
     "𝑎̀": 'a',
@@ -163,7 +194,7 @@ fontsWords = {
     "𝑥": 'x',
     "𝑦": 'y',
     "𝑧": 'z',
-# Tercer set
+    # Tercer set
     "𝐀": 'A',
     "𝐁": 'B',
     "𝐄": 'E',
@@ -233,8 +264,6 @@ fontsWords = {
     "": 'Z',
     "": 'z',
 }
-wordStrange = {}
-
 
 def readJSONFiles():
     # Obtener el nombre del archivo para cada archivo en la ruta TRAIN
@@ -250,15 +279,12 @@ def readJSONFiles():
 # Función para leer las etiquetas
 def readTXT():
     trainLabel = pd.read_csv(PATH_TRAIN)
-    # print(trainLabel[trainLabel['label']==1])
-    # print(trainLabel)
     return trainLabel
 
 # Preprocesar texto
 def preprocesstext(file, name_file):
     trainLabel = readTXT()
     i = 0
-    # print(f"Preprocessado del {name_file}")
 
     # Agregar la columna subject
     file.insert(0, 'Subject', name_file)
@@ -279,7 +305,7 @@ def preprocesstext(file, name_file):
 
         # Eliminar signos de puntuacion extraños, cambiar letra acentuada
         tempMessage = unicodedata.normalize('NFKD', tempMessage).encode('ASCII', 'ignore').decode('utf-8')
-        tempMessage = tempMessage.replace('.',' ').replace('-',' ')
+        tempMessage = tempMessage.replace('.', ' ').replace('-', ' ')
 
         # Tokenizar y convertir a minuscula
         tempMessage = word_tokenize(tempMessage.lower())
@@ -334,5 +360,6 @@ wordCountTab = go.Figure(data=[go.Table(header=dict(values=['Word', 'Count']),
 # Mostrar tabla
 wordCountTab.show()
 
-df = pd.DataFrame(wordCount.items(), columns=['Palabra','Cantidad'])
+# Crear Data Frame y guardar CSV de las palabras y su cantidad
+df = pd.DataFrame(wordCount.items(), columns=['Palabra', 'Cantidad'])
 df.to_csv(f'{PATH_CSVLINKEDFILES}new.csv')
