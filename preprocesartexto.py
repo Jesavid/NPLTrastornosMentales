@@ -1,5 +1,6 @@
 import os
 import string
+import re
 import unicodedata
 import nltk
 from nltk.tokenize import word_tokenize
@@ -8,10 +9,12 @@ from dotenv import load_dotenv
 import pandas as pd
 import plotly.graph_objects as go
 
+
 nltk.download('punkt')
 nltk.download('stopwords')
 
 stopWords = set(stopwords.words('spanish'))
+stopWordsEn = set(stopwords.words('english'))
 
 # Ajustar las opciones de visualización en terminal
 pd.set_option('display.max_rows', None)  # Muestra todas las filas
@@ -60,7 +63,7 @@ wordCount = {}
 wordStrange = {}
 
 # Declarar array de stop words no contenidas en nltk
-stop_words = stopWords.union(
+stop_words = stopWordsEn.union(stopWords.union(
     [
         "a", "al", "algo", "algunas", "algunos", "ante", "antes", "como", "con", "contra", "cual", "cuando", "de",
         "del", "desde",
@@ -119,7 +122,7 @@ stop_words = stopWords.union(
         "últimas",
         "último", "últimos"
     ]
-)
+))
 
 # Declarar array de signos de puntuacion
 puntuacion = ['___', '✦', '...', '“', '«', '✗', '¿', '»', '⁣', '``', '°', '━']
@@ -223,64 +226,11 @@ fontsWords = {
     "𝐏": 'P',
     "𝐑": 'R',
     "𝐒": 'S',
-    "𝐘": 'Y',
-
-    "": 'A',
-    "": 'a',
-    "": 'B',
-    "": 'b',
-    "": 'C',
-    "": 'c',
-    "": 'D',
-    "": 'd',
-    "": 'E',
-    "": 'e',
-    "": 'F',
-    "": 'f',
-    "": 'G',
-    "": 'g',
-    "": 'H',
-    "": 'h',
-    "": 'I',
-    "": 'i',
-    "": 'J',
-    "": 'j',
-    "": 'K',
-    "": 'k',
-    "": 'L',
-    "": 'l',
-    "": 'M',
-    "": 'm',
-    "": 'N',
-    "": 'n',
-    "": 'Ñ',
-    "": 'ñ',
-    "": 'O',
-    "": 'o',
-    "": 'P',
-    "": 'p',
-    "": 'Q',
-    "": 'q',
-    "": 'R',
-    "": 'r',
-    "": 'S',
-    "": 's',
-    "": 'T',
-    "": 't',
-    "": 'U',
-    "": 'u',
-    "": 'V',
-    "": 'v',
-    "": 'W',
-    "": 'w',
-    "": 'X',
-    "": 'x',
-    "": 'Y',
-    "": 'y',
-    "": 'Z',
-    "": 'z',
+    "𝐘": 'Y'
 }
 
+# Declarar patron de expreciones regulares
+patron = r'\b(ah+ah+|aja+|aj+aj+|ja+ja|ja+|ha+|he+|ah+|aja|aja+j+|je+|j+e|je+je+|ja+j+a+|\d[a-zA-Z]\d)\b'
 
 def readJSONFiles(index):
     # Obtener el nombre del archivo para cada archivo en la ruta
@@ -320,9 +270,12 @@ def preprocesstext(file, name_file):
         # Cambiar emoji por texto
         tempMessage = ''.join(emojis[caracter] if caracter in emojis else caracter for caracter in tempMessage)
 
+        # Eliminar palabras con expreciones regulares
+        tempMessage = re.sub(patron, '', tempMessage, flags=re.IGNORECASE)
+
         # Eliminar signos de puntuacion extraños, cambiar letra acentuada
         tempMessage = unicodedata.normalize('NFKD', tempMessage).encode('ASCII', 'ignore').decode('utf-8')
-        tempMessage = tempMessage.replace('.', ' ').replace('-', ' ')
+        tempMessage = tempMessage.replace('.', ' ').replace('-', ' ').replace('___', " ")
 
         # Tokenizar y convertir a minuscula
         tempMessage = word_tokenize(tempMessage.lower())
@@ -335,13 +288,13 @@ def preprocesstext(file, name_file):
         tempMessage = [tempMessage for tempMessage in tempMessage if tempMessage not in puntuacion]
 
         # Contar el total de las palabras de todos los subjects
-        # for word in tempMessage:
-        #     if word in wordCount:
-        #         wordCount[word] = wordCount[word] + 1
-        #         wordStrange[word] = name_file
-        #     else:
-        #         wordCount[word] = 1
-        #         wordStrange[word] = name_file
+        for word in tempMessage:
+            if word in wordCount:
+                wordCount[word] = wordCount[word] + 1
+                wordStrange[word] = name_file
+            else:
+                wordCount[word] = 1
+                wordStrange[word] = name_file
 
         # Regresar tempMessage a una oracion
         tempMessage = ' '.join(tempMessage)
@@ -362,7 +315,6 @@ def preprocesstext(file, name_file):
     corpus['subject'].append(name_file.replace('.json', ''))
     corpus['message'].append(concatMessage)
     corpus['label'].append(file['label'][0])
-
 
 
 for index in range(len(next(iter(paths.values())))):
@@ -386,7 +338,7 @@ for index in range(len(next(iter(paths.values())))):
                                             cells=dict(values=[word, count])
                                             )])
     # Mostrar tabla
-    #wordCountTab.show()
+    wordCountTab.show()
 
     df = pd.DataFrame(corpus)
     df.to_json(f'{PATH_FINALFILE}{paths['type'][index]}corpus.json')
