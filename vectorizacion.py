@@ -26,5 +26,6 @@ def bagOfWords():
     df = pd.DataFrame(vector.toarray(), columns=vectorizer.get_feature_names_out())
     df.to_csv(f'{PATH_FINALFILE}vector.csv')
 
+    return df
 
 bagOfWords()
