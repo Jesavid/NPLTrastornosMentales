@@ -17,15 +17,22 @@ PATH_FINALFILE = os.getenv('PATH_FINALFILE')
 def bagOfWords():
     vectorizer = CountVectorizer()
     # Leer JSON del corpus subject, message, label
-    partialCorpus = pd.read_json(f'{PATH_FINALFILE}traincorpus.json', dtype=object)
+    trainCorpus = pd.read_json(f'{PATH_FINALFILE}traincorpus.json', dtype=object)
+    trialCorpus = pd.read_json(f'{PATH_FINALFILE}trailcorpus.json', dtype=object)
+
 
     # Vectoriacion global
-    vector = vectorizer.fit_transform(partialCorpus['message'])
+    xTrain = vectorizer.fit_transform(trainCorpus['message'])
+    xTrial = vectorizer.transform(trialCorpus['message'])
 
     # Convertir en dataframe y guardar CSV de la vectorizacion
-    df = pd.DataFrame(vector.toarray(), columns=vectorizer.get_feature_names_out())
-    df.to_csv(f'{PATH_FINALFILE}vector.csv')
+    xTrainDF = pd.DataFrame(xTrain.toarray(), columns=vectorizer.get_feature_names_out())
+    xTrialDF = pd.DataFrame(xTrial.toarray(), columns=vectorizer.get_feature_names_out())
 
-    return df
+    # Guardar BoW como CSV
+    xTrainDF.to_csv(f'{PATH_FINALFILE}xTrainDF.csv')
+    xTrialDF.to_csv(f'{PATH_FINALFILE}xTrialDF.csv')
+
+    return xTrainDF, xTrialDF
 
 bagOfWords()
