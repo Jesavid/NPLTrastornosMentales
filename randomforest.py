@@ -29,6 +29,13 @@ def randomForest():
                                      oob_score=True)
 
     randomF.fit(xTrainDF, trainLabel['label'])
+
+    # Mostrar arboles
+    # print(classification_report())
+    # print(f'F1: {f1_score(df, label['label'])}')
+    # print(randomF.predict(trail))
+
+    # Mostrar resultados
     print(f'Score: {randomF.score(xTrainDF, trainLabel['label'])}')
     print(f'Obb Score: {randomF.oob_score_*100}')
     print(f'Predict: {randomF.predict(xTrialDF)}')
@@ -44,12 +51,5 @@ def randomForest():
     reporte = classification_report(trialLabel['label'], randomF.predict(xTrialDF))
     print(reporte)
 
-    # print(classification_report())
-    # print(f'F1: {f1_score(df, label['label'])}')
-    # print(randomF.predict(trail))
-
-    # for forest in randomF.estimators_:
-    #     tree.plot_tree(forest, feature_names=df.columns)
-    #     plt.show()
 
 randomForest()
