@@ -28,13 +28,13 @@ load_dotenv()
 PATH_SUBJECTSTRAIN = os.getenv('PATH_SUBJECTSTRAIN')
 PATH_TRAIN = os.getenv('PATH_TRAIN')
 
-PATH_SUBJECTSTRAIL = os.getenv('PATH_SUBJECTSTRAIL')
-PATH_TRAIL = os.getenv('PATH_TRAIL')
+PATH_SUBJECTSTRIAL = os.getenv('PATH_SUBJECTSTRIAL')
+PATH_TRIAL = os.getenv('PATH_TRIAL')
 
 paths = {
-    "type": ['train', 'trail'],
-    "subjects": [PATH_SUBJECTSTRAIN, PATH_SUBJECTSTRAIL],
-    "label": [PATH_TRAIN, PATH_TRAIL]
+    "type": ['train', 'trial'],
+    "subjects": [PATH_SUBJECTSTRAIN, PATH_SUBJECTSTRIAL],
+    "label": [PATH_TRAIN, PATH_TRIAL]
 }
 
 PATH_FINALFILE = os.getenv('PATH_FINALFILE')
@@ -325,24 +325,24 @@ for index in range(len(next(iter(paths.values())))):
     finalFile.to_json(f'{PATH_FINALFILE}{paths['type'][index]}.json')
 
     # Crear Data Frame y guardar CSV de las palabras y su cantidad
-    df = pd.DataFrame(wordCount.items(), columns=['Palabra', 'Cantidad'])
-    df.to_csv(f'{PATH_FINALFILE}{paths['type'][index]}.csv')
+    # df = pd.DataFrame(wordCount.items(), columns=['Palabra', 'Cantidad'])
+    # df.to_csv(f'{PATH_FINALFILE}{paths['type'][index]}.csv')
 
     # Ordenar de mayor a menor las palabras
-    wordCount = dict(sorted(wordCount.items(), key=lambda item: item[1], reverse=True))
-    word = list(wordCount.keys())
-    count = list(wordCount.values())
+    # wordCount = dict(sorted(wordCount.items(), key=lambda item: item[1], reverse=True))
+    # word = list(wordCount.keys())
+    # count = list(wordCount.values())
 
     # Crear una tabla de las palabras tokenizadas y su cantidad
-    wordCountTab = go.Figure(data=[go.Table(header=dict(values=['Word', 'Count']),
-                                            cells=dict(values=[word, count])
-                                            )])
+    # wordCountTab = go.Figure(data=[go.Table(header=dict(values=['Word', 'Count']),
+    #                                         cells=dict(values=[word, count])
+    #                                         )])
     # Mostrar tabla
-    wordCountTab.show()
+    # wordCountTab.show()
 
+    #Convertir a DF y guardar corpus com JSON
     df = pd.DataFrame(corpus)
-    df.to_json(f'{PATH_FINALFILE}{paths['type'][index]}corpus.json')
-
+    df.to_json(f'{PATH_FINALFILE}{paths['type'][index]}Corpus.json')
 
     # Vaciar diccionario
     for key in dataArray:
