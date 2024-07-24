@@ -12,23 +12,29 @@ load_dotenv()
 PATH_FINALFILE = os.getenv('PATH_FINALFILE')
 
 def randomForest():
-    df = vectorizacion.bagOfWords()
+    # Obtener vectorizacion de los datos
+    xTrainDF, xTrialDF = vectorizacion.bagOfWords()
 
-    label = pd.read_json(f'{PATH_FINALFILE}traincorpus.json')
-    trail = pd.read_csv(f'{PATH_FINALFILE}vectorTrail.csv')
+    # Obtener labels
+    trainLabel = pd.read_json(f'{PATH_FINALFILE}trainCorpus.json')
+    # trialLabel = pd.read_json(f'{PATH_FINALFILE}trialCorpus.json')
 
-    # print(trail)
-
+    # Establecer RandomForest
     randomF = RandomForestClassifier(n_estimators=100,
                                      criterion='gini',
                                      max_features='sqrt',
                                      bootstrap=True,
                                      max_samples=2/3,
                                      oob_score=True)
-    randomF.fit(df, label['label'])
-    print(f'Score: {randomF.score(df, label['label'])}')
+
+    randomF.fit(xTrainDF, trainLabel['label'])
+    print(f'Score: {randomF.score(xTrainDF, trainLabel['label'])}')
     print(f'Obb Score: {randomF.oob_score_*100}')
-    print(f'Predict: {randomF.predict(trail)}')
+    print(f'Predict: {randomF.predict(xTrialDF)}')
+
+
+
+
     # print(classification_report())
     # print(f'F1: {f1_score(df, label['label'])}')
     # print(randomF.predict(trail))
