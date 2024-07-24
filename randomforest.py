@@ -1,8 +1,9 @@
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import f1_score, accuracy_score, recall_score, classification_report
+from sklearn.metrics import confusion_matrix, classification_report
 import vectorizacion
 import pandas as pd
 import os
+import seaborn as sns
 from dotenv import load_dotenv
 import matplotlib.pyplot as plt
 from sklearn import tree
@@ -17,7 +18,7 @@ def randomForest():
 
     # Obtener labels
     trainLabel = pd.read_json(f'{PATH_FINALFILE}trainCorpus.json')
-    # trialLabel = pd.read_json(f'{PATH_FINALFILE}trialCorpus.json')
+    trialLabel = pd.read_json(f'{PATH_FINALFILE}trialCorpus.json')
 
     # Establecer RandomForest
     randomF = RandomForestClassifier(n_estimators=100,
@@ -32,8 +33,16 @@ def randomForest():
     print(f'Obb Score: {randomF.oob_score_*100}')
     print(f'Predict: {randomF.predict(xTrialDF)}')
 
+    # Crear matriz de confusion
+    matrizConfusion = confusion_matrix(trialLabel['label'], randomF.predict(xTrialDF))
+    sns.heatmap(matrizConfusion, annot=True, fmt='d', cmap='Blues')
+    plt.xlabel('Predicted')
+    plt.ylabel('True')
+    plt.show()
 
-
+    # Reporte de clasificacion
+    reporte = classification_report(trialLabel['label'], randomF.predict(xTrialDF))
+    print(reporte)
 
     # print(classification_report())
     # print(f'F1: {f1_score(df, label['label'])}')
