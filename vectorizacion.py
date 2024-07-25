@@ -17,8 +17,8 @@ PATH_FINALFILE = os.getenv('PATH_FINALFILE')
 def bagOfWords():
     vectorizer = CountVectorizer()
     # Leer JSON del corpus subject, message, label
-    trainCorpus = pd.read_json(f'{PATH_FINALFILE}trainCorpus.json', dtype=object)
-    trialCorpus = pd.read_json(f'{PATH_FINALFILE}trialCorpus.json', dtype=object)
+    trainCorpus = pd.read_json(f'{PATH_FINALFILE}trainCorpus.json')
+    trialCorpus = pd.read_json(f'{PATH_FINALFILE}trialCorpus.json')
 
 
     # Vectoriacion global
