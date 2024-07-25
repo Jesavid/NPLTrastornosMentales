@@ -14,7 +14,7 @@ PATH_FINALFILE = os.getenv('PATH_FINALFILE')
 
 def randomForest():
     # Obtener vectorizacion de los datos
-    xTrainDF, xTrialDF = vectorizacion.bagOfWords()
+    xTrainDF, xTrialDF, trainCorpus, trialCorpus = vectorizacion.bagOfWords()
 
     # Obtener labels
     trainLabel = pd.read_json(f'{PATH_FINALFILE}trainCorpus.json')
@@ -28,7 +28,7 @@ def randomForest():
                                      max_samples=2/3,
                                      oob_score=True)
 
-    randomF.fit(xTrainDF, trainLabel['label'])
+    randomF.fit(xTrainDF, trainCorpus['label'])
 
     # Mostrar arboles
     # print(classification_report())
@@ -41,14 +41,14 @@ def randomForest():
     print(f'Predict: {randomF.predict(xTrialDF)}')
 
     # Crear matriz de confusion
-    matrizConfusion = confusion_matrix(trialLabel['label'], randomF.predict(xTrialDF))
+    matrizConfusion = confusion_matrix(trialCorpus['label'], randomF.predict(xTrialDF))
     sns.heatmap(matrizConfusion, annot=True, fmt='d', cmap='Blues')
     plt.xlabel('Predicted')
     plt.ylabel('True')
     plt.show()
 
     # Reporte de clasificacion
-    reporte = classification_report(trialLabel['label'], randomF.predict(xTrialDF))
+    reporte = classification_report(trialCorpus['label'], randomF.predict(xTrialDF))
     print(reporte)
 
 
