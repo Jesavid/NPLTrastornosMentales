@@ -33,6 +33,6 @@ def bagOfWords():
     xTrainDF.to_csv(f'{PATH_FINALFILE}xTrainDF.csv')
     xTrialDF.to_csv(f'{PATH_FINALFILE}xTrialDF.csv')
 
-    return xTrainDF, xTrialDF
+    return xTrainDF, xTrialDF, trainCorpus, trialCorpus
 
 bagOfWords()
