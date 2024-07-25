@@ -42,5 +42,5 @@ def randomForest():
     reporte = classification_report(trialCorpus['label'], randomF.predict(xTrialDF))
     print(reporte)
 
-
-randomForest()
+if __name__ == "__main__":
+    randomForest()

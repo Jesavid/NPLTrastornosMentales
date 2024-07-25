@@ -37,5 +37,6 @@ def logisticRegresion():
     plt.show()
 
 
-logisticRegresion()
+if __name__ == "__main__":
+    logisticRegresion()
 

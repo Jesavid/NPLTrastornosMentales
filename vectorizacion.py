@@ -35,4 +35,6 @@ def bagOfWords():
 
     return xTrainDF, xTrialDF, trainCorpus, trialCorpus
 
-bagOfWords()
+
+if __name__ == "__main__":
+    bagOfWords()
