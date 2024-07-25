@@ -36,7 +36,7 @@ def randomForest():
     # print(randomF.predict(trail))
 
     # Mostrar resultados
-    print(f'Score: {randomF.score(xTrainDF, trainLabel['label'])}')
+    print(f'Score: {randomF.score(xTrainDF, trainCorpus['label'])}')
     print(f'Obb Score: {randomF.oob_score_*100}')
     print(f'Predict: {randomF.predict(xTrialDF)}')
 
