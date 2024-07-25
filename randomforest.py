@@ -2,23 +2,14 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import confusion_matrix, classification_report
 import vectorizacion
 import pandas as pd
-import os
 import seaborn as sns
-from dotenv import load_dotenv
 import matplotlib.pyplot as plt
 from sklearn import tree
 
-# Cargar variables de entorno
-load_dotenv()
-PATH_FINALFILE = os.getenv('PATH_FINALFILE')
 
 def randomForest():
     # Obtener vectorizacion de los datos
     xTrainDF, xTrialDF, trainCorpus, trialCorpus = vectorizacion.bagOfWords()
-
-    # Obtener labels
-    trainLabel = pd.read_json(f'{PATH_FINALFILE}trainCorpus.json')
-    trialLabel = pd.read_json(f'{PATH_FINALFILE}trialCorpus.json')
 
     # Establecer RandomForest
     randomF = RandomForestClassifier(n_estimators=100,
