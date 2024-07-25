@@ -23,7 +23,7 @@ def logisticRegresion():
     np.set_printoptions(suppress=True)
 
     # Probar modelo
-    print(logisticReg.predict(xTrainDF))
+    # print(logisticReg.predict(xTrainDF))
 
     # Reporte de clasificacion
     reporte = classification_report(trialCorpus['label'], logisticReg.predict(xTrialDF))

@@ -44,7 +44,7 @@ dataArray = {
     'Subject': [],
     'id_message': [],
     'message': [],
-    'preproccedMessage': [],
+    'preprocessedMessage': [],
     'date': [],
     'label': []
 }
@@ -255,7 +255,7 @@ def preprocesstext(file, name_file):
     # Agregar la columna subject
     file.insert(0, 'Subject', name_file)
     # Agregar la columna para el texto preprocesado
-    file.insert(3, 'preproccedMessage', " ")
+    file.insert(3, 'preprocessedMessage', " ")
 
     # Obtener el label para un subject especifico
     specLabel = trainLabel[trainLabel['Subject'] == name_file.replace('.json', '')]
@@ -299,15 +299,15 @@ def preprocesstext(file, name_file):
         # Regresar tempMessage a una oracion
         tempMessage = ' '.join(tempMessage)
         concatMessage += tempMessage + " "
-        # Agregar en la columna preproccedMessage el texto preprocesado
-        file.loc[i, 'preproccedMessage'] = tempMessage
+        # Agregar en la columna preprocessedMessage el texto preprocesado
+        file.loc[i, 'preprocessedMessage'] = tempMessage
         i = i + 1
 
     # Agregar al dict dataArray los subjects
     dataArray['Subject'].append(name_file.replace('.json', ''))
     dataArray['id_message'].append(file['id_message'])
     dataArray['message'].append(file['message'])
-    dataArray['preproccedMessage'].append(file['preproccedMessage'])
+    dataArray['preprocessedMessage'].append(file['preprocessedMessage'])
     dataArray['date'].append(file['date'])
     dataArray['label'].append(file['label'])
 

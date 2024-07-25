@@ -16,7 +16,7 @@ def randomForest():
                                      criterion='gini',
                                      max_features='sqrt',
                                      bootstrap=True,
-                                     max_samples=2/3,
+                                     max_samples=3/4,
                                      oob_score=True)
 
     randomF.fit(xTrainDF, trainCorpus['label'])
