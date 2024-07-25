@@ -15,7 +15,7 @@ def logisticRegresion():
     # xTrain, xTrial, yTrain, yTrial = train_test_split (xTrainDF, trainLabel['label'], test_size=.30)
 
     # Crear modelo
-    logisticReg = LogisticRegression().fit(xTrainDF, trialCorpus['label'])
+    logisticReg = LogisticRegression().fit(xTrainDF, trainCorpus['label'])
 
     # Mostrar resultados
 
@@ -28,6 +28,14 @@ def logisticRegresion():
     # Reporte de clasificacion
     reporte = classification_report(trialCorpus['label'], logisticReg.predict(xTrialDF))
     print(reporte)
+
+    # Crear matriz de confusion
+    matrizConfusion = confusion_matrix(trialCorpus['label'], logisticReg.predict(xTrialDF))
+    sns.heatmap(matrizConfusion, annot=True, fmt='d', cmap='Blues')
+    plt.xlabel('Predicted')
+    plt.ylabel('True')
+    plt.show()
+
 
 logisticRegresion()
 
