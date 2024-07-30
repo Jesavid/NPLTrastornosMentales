@@ -325,8 +325,8 @@ for index in range(len(next(iter(paths.values())))):
     finalFile.to_json(f'{PATH_FINALFILE}{paths['type'][index]}.json')
 
     # Crear Data Frame y guardar CSV de las palabras y su cantidad
-    # df = pd.DataFrame(wordCount.items(), columns=['Palabra', 'Cantidad'])
-    # df.to_csv(f'{PATH_FINALFILE}{paths['type'][index]}.csv')
+    df = pd.DataFrame(wordCount.items(), columns=['Palabra', 'Cantidad'])
+    df.to_csv(f'{PATH_FINALFILE}{paths['type'][index]}wordCount.csv')
 
     # Ordenar de mayor a menor las palabras
     # wordCount = dict(sorted(wordCount.items(), key=lambda item: item[1], reverse=True))
